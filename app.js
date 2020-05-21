@@ -33,11 +33,13 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/log', (req, res) => {
-    for (const user of users) {
-        let isExist = (user.email === req.body.email && user.pass === req.body.pass) || false;
-        if (isExist) return res.render('main', {message: 'You are logged in now'});
-    }
-    res.render('login', {message: 'Email or password is not valid'});
+    const {email, pass} = req.body;
+    let isExist = users.find(user => user.email === email && user.pass === pass)
+        if (isExist) {
+            res.render('main', {message: 'You are logged in now'});
+    } else {
+            res.render('login', {message: 'Email or password is not valid'});
+        }
 });
 
 // Register
@@ -46,13 +48,14 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/reg', (req, res) => {
-    for (const user of users) {
-        let isUsed = (user.email === req.body.email) || false;
-        if (isUsed) return res.render('register', {message: 'This email is already used'});
-    }
-    users.push(req.body);
-    res.render('main', {message: 'Thank you for your registration!'});
-    console.log(users);
+    let isUsed = users.find(user => user.email === req.body.email)
+        if (isUsed) {
+            res.render('register', {message: 'This email is already used'});
+        } else {
+            users.push(req.body);
+            res.render('main', {message: 'Thank you for your registration!'});
+            console.log(users);
+        }
 });
 
 // Users list
